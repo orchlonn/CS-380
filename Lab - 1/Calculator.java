@@ -14,17 +14,17 @@ public class Calculator extends JFrame implements ActionListener {
     private JButton[] numberButtons;
     private JButton[] operationButtons;
     private JButton addButton, subButton, mulButton, divButton;
-    private JButton equalsButton, clearButton;
+    private JButton equalsButton, clearButton, negateButton;
     
     // Calculator logic variables
-    private double num1 = 0, num2 = 0, result = 0;
+    private int num1 = 0, num2 = 0, result = 0;
     private char operator;
     
     public Calculator() {
         // Initialize the frame
-        setTitle("Integer Calculator");
+        setTitle("Integer Calculator 1.0");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 500);
+        setSize(450, 500);
         setLocationRelativeTo(null);
         setResizable(false);
         
@@ -56,13 +56,14 @@ public class Calculator extends JFrame implements ActionListener {
         // Operation buttons
         addButton = new JButton("+");
         subButton = new JButton("-");
-        mulButton = new JButton("*");
+        mulButton = new JButton("x");
         divButton = new JButton("/");
         equalsButton = new JButton("=");
         clearButton = new JButton("Clear");
+        negateButton = new JButton("+/-");
         
         operationButtons = new JButton[]{addButton, subButton, mulButton, divButton, 
-                                       equalsButton, clearButton};
+                                       equalsButton, clearButton, negateButton};
         
         // Set properties for operation buttons
         for (JButton button : operationButtons) {
@@ -78,6 +79,7 @@ public class Calculator extends JFrame implements ActionListener {
         divButton.setBackground(new Color(255, 165, 0));
         equalsButton.setBackground(new Color(0, 128, 255));
         clearButton.setBackground(new Color(255, 69, 69));
+        negateButton.setBackground(new Color(128, 128, 128));
     }
     
     private void setupLayout() {
@@ -88,42 +90,51 @@ public class Calculator extends JFrame implements ActionListener {
         displayPanel.add(display);
         add(displayPanel, BorderLayout.NORTH);
         
-        // Main panel for buttons
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(5, 4, 5, 5));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // Main panel for buttons using BorderLayout
+        JPanel mainButtonPanel = new JPanel(new BorderLayout(5, 5));
+        mainButtonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        // Add buttons in calculator layout
-        // Row 1: Clear, empty, /
-        buttonPanel.add(clearButton);
-        buttonPanel.add(new JLabel()); // Empty space
-        buttonPanel.add(divButton);
+        // Left panel for numbers (3x4 grid)
+        JPanel numberPanel = new JPanel(new GridLayout(4, 3, 5, 5));
         
-        // Row 2: 7, 8, 9, *
-        buttonPanel.add(numberButtons[7]);
-        buttonPanel.add(numberButtons[8]);
-        buttonPanel.add(numberButtons[9]);
-        buttonPanel.add(mulButton);
+        // Add number buttons in calculator layout
+        // Row 1: 7, 8, 9
+        numberPanel.add(numberButtons[7]);
+        numberPanel.add(numberButtons[8]);
+        numberPanel.add(numberButtons[9]);
         
-        // Row 3: 4, 5, 6, -
-        buttonPanel.add(numberButtons[4]);
-        buttonPanel.add(numberButtons[5]);
-        buttonPanel.add(numberButtons[6]);
-        buttonPanel.add(subButton);
+        // Row 2: 4, 5, 6
+        numberPanel.add(numberButtons[4]);
+        numberPanel.add(numberButtons[5]);
+        numberPanel.add(numberButtons[6]);
         
-        // Row 4: 1, 2, 3, +
-        buttonPanel.add(numberButtons[1]);
-        buttonPanel.add(numberButtons[2]);
-        buttonPanel.add(numberButtons[3]);
-        buttonPanel.add(addButton);
+        // Row 3: 1, 2, 3
+        numberPanel.add(numberButtons[1]);
+        numberPanel.add(numberButtons[2]);
+        numberPanel.add(numberButtons[3]);
         
-        // Row 5: empty, 0, empty, =
-        buttonPanel.add(new JLabel()); // Empty space
-        buttonPanel.add(numberButtons[0]);
-        buttonPanel.add(new JLabel()); // Empty space
-        buttonPanel.add(equalsButton);
+        // Row 4: empty, 0, empty
+        numberPanel.add(numberButtons[0]);
+        numberPanel.add(new JLabel()); // Empty space
+        numberPanel.add(new JLabel()); // Empty space
         
-        add(buttonPanel, BorderLayout.CENTER);
+        // Right panel for operations (vertical layout)
+        JPanel operationPanel = new JPanel(new GridLayout(7, 1, 5, 5));
+        
+        // Add operation buttons vertically
+        operationPanel.add(clearButton);
+        operationPanel.add(negateButton);
+        operationPanel.add(divButton);
+        operationPanel.add(mulButton);
+        operationPanel.add(subButton);
+        operationPanel.add(addButton);
+        operationPanel.add(equalsButton);
+        
+        // Add panels to main panel
+        mainButtonPanel.add(numberPanel, BorderLayout.CENTER);
+        mainButtonPanel.add(operationPanel, BorderLayout.EAST);
+        
+        add(mainButtonPanel, BorderLayout.CENTER);
     }
     
     @Override
@@ -141,60 +152,58 @@ public class Calculator extends JFrame implements ActionListener {
         
         // Handle operation buttons
         if (e.getSource() == addButton) {
-            num1 = Double.parseDouble(display.getText());
+            num1 = Arithmetic.safeParseInt(display.getText());
             operator = '+';
             display.setText("0");
         }
         
         if (e.getSource() == subButton) {
-            num1 = Double.parseDouble(display.getText());
+            num1 = Arithmetic.safeParseInt(display.getText());
             operator = '-';
             display.setText("0");
         }
         
         if (e.getSource() == mulButton) {
-            num1 = Double.parseDouble(display.getText());
+            num1 = Arithmetic.safeParseInt(display.getText());
             operator = '*';
             display.setText("0");
         }
         
         if (e.getSource() == divButton) {
-            num1 = Double.parseDouble(display.getText());
+            num1 = Arithmetic.safeParseInt(display.getText());
             operator = '/';
             display.setText("0");
         }
         
         if (e.getSource() == equalsButton) {
-            num2 = Double.parseDouble(display.getText());
+            num2 = Arithmetic.safeParseInt(display.getText());
             
-            switch (operator) {
-                case '+':
-                    result = num1 + num2;
-                    break;
-                case '-':
-                    result = num1 - num2;
-                    break;
-                case '*':
-                    result = num1 * num2;
-                    break;
-                case '/':
-                    if (num2 != 0) {
-                        result = num1 / num2;
-                    } else {
-                        display.setText("Error");
-                        return;
-                    }
-                    break;
-            }
-            
-            // Display result as integer if it's a whole number
-            if (result == (int) result) {
-                display.setText(String.valueOf((int) result));
-            } else {
+            try {
+                switch (operator) {
+                    case '+':
+                        result = Arithmetic.addition(num1, num2);
+                        break;
+                    case '-':
+                        result = Arithmetic.subtraction(num1, num2);
+                        break;
+                    case '*':
+                        result = Arithmetic.multiplication(num1, num2);
+                        break;
+                    case '/':
+                        result = Arithmetic.division(num1, num2);
+                        break;
+                }
+                
+                // Display result as integer (always integer for this calculator)
                 display.setText(String.valueOf(result));
+                num1 = result;
+                
+            } catch (ArithmeticException ex) {
+                display.setText("Error");
+                num1 = 0;
+                num2 = 0;
+                result = 0;
             }
-            
-            num1 = result;
         }
         
         if (e.getSource() == clearButton) {
@@ -202,6 +211,12 @@ public class Calculator extends JFrame implements ActionListener {
             num1 = 0;
             num2 = 0;
             result = 0;
+        }
+        
+        if (e.getSource() == negateButton) {
+            int currentValue = Arithmetic.safeParseInt(display.getText());
+            int negatedValue = Arithmetic.negate(currentValue);
+            display.setText(String.valueOf(negatedValue));
         }
     }
     
