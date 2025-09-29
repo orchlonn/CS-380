@@ -6,6 +6,7 @@ import javax.swing.*;
 /**
  * Simple Integer Calculator GUI Application
  * CS-380 Lab Assignment #1
+ * @author Orchlon Chinbat (50291063)
  */
 public class Calculator extends JFrame implements ActionListener {
     
