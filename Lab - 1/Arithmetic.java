@@ -1,6 +1,7 @@
 /**
  * Arithmetic class to handle basic mathematical operations for integers
  * CS-380 Lab Assignment #1 - Integer Calculator
+ * @author Orchlon Chinbat (50291063)
  */
 public class Arithmetic {
     
