@@ -2,6 +2,7 @@
  * Node class represents a single node in the Binary Search Tree
  * Each node contains a value and references to left and right children
  */
+
 class Node{
    /** The integer value stored in this node */
    int value;
