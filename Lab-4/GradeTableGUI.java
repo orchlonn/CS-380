@@ -1,18 +1,17 @@
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GradeTable extends JFrame {
+public class GradeTableGUI extends JFrame {
     private JTable gradeTable;
     private DefaultTableModel tableModel;
     private JButton refreshButton;
@@ -25,12 +24,14 @@ public class GradeTable extends JFrame {
     private static final String DB_PASSWORD = "99889699";
     private static final String QUERY = "SELECT * FROM 302_grades";
 
-    public GradeTable() {
-        initializeGUI();
+    public GradeTableGUI() {
+        initializeComponents();
+        setupLayout();
+        setupEventHandlers();
         loadDataFromDatabase();
     }
 
-    private void initializeGUI() {
+    private void initializeComponents() {
         // Initialize the main frame
         setTitle("Grade Table - Database Viewer");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,8 +63,9 @@ public class GradeTable extends JFrame {
         
         statusLabel = new JLabel("Ready to load data...");
         statusLabel.setForeground(Color.BLUE);
+    }
 
-        // Setup layout
+    private void setupLayout() {
         setLayout(new BorderLayout());
 
         // Create top panel for controls
@@ -83,8 +85,9 @@ public class GradeTable extends JFrame {
         infoLabel.setForeground(Color.GRAY);
         bottomPanel.add(infoLabel);
         add(bottomPanel, BorderLayout.SOUTH);
+    }
 
-        // Setup event handlers
+    private void setupEventHandlers() {
         refreshButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -149,7 +152,7 @@ public class GradeTable extends JFrame {
                     
                     // Show error dialog
                     JOptionPane.showMessageDialog(
-                        GradeTable.this,
+                        GradeTableGUI.this,
                         "Failed to load data from database:\n" + e.getMessage(),
                         "Database Error",
                         JOptionPane.ERROR_MESSAGE
@@ -163,35 +166,10 @@ public class GradeTable extends JFrame {
         worker.execute();
     }
 
-    // Keep the original console method for backward compatibility
-    public static void connectToDatabase() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/expresso_shop";
-        String query = "SELECT * FROM 302_grades";
-
-        try (Connection con = DriverManager.getConnection(url, "root", "99889699");
-             Statement statement = con.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
-            
-            System.out.println("Connected to database");
-
-            while (resultSet.next()) {
-                String studentID = resultSet.getString("studentID");
-                String firstName = resultSet.getString("firstName");
-                String lastName = resultSet.getString("lastName");
-                String finalGrade = resultSet.getString("finalGrade");
-                System.out.println(studentID + " " + firstName + " " + lastName + " " + finalGrade);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error connecting to database");
-            throw e;
-        }
-    }
-
     public static void main(String[] args) {
         // Set look and feel
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -200,7 +178,7 @@ public class GradeTable extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new GradeTable().setVisible(true);
+                new GradeTableGUI().setVisible(true);
             }
         });
     }
