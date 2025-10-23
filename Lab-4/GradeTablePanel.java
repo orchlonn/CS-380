@@ -1,11 +1,10 @@
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 public class GradeTablePanel extends JPanel {
-    private JTable gradeTable;
-    private DefaultTableModel tableModel;
+    private JTextArea gradeDisplayArea;
     private JScrollPane scrollPane;
+    private java.util.List<Object[]> gradeData;
 
     public GradeTablePanel() {
         initializeComponents();
@@ -13,84 +12,85 @@ public class GradeTablePanel extends JPanel {
     }
 
     private void initializeComponents() {
-        // Initialize table model with column names
-        String[] columnNames = {"Student ID", "First Name", "Last Name", "Final Grade"};
-        tableModel = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Make table read-only
-            }
-        };
-
-        // Initialize table
-        gradeTable = new JTable(tableModel);
-        gradeTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        gradeTable.setRowHeight(25);
-        gradeTable.getTableHeader().setReorderingAllowed(false);
-
+        // Initialize text area for displaying grades
+        gradeDisplayArea = new JTextArea();
+        gradeDisplayArea.setEditable(false);
+        gradeDisplayArea.setFont(new Font("Arial", Font.PLAIN, 12));
+        gradeDisplayArea.setBackground(Color.WHITE);
+        gradeDisplayArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
         // Initialize scroll pane
-        scrollPane = new JScrollPane(gradeTable);
-        scrollPane.setPreferredSize(new Dimension(850, 300));
+        scrollPane = new JScrollPane(gradeDisplayArea);
+        scrollPane.setPreferredSize(new Dimension(600, 200));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        
+        gradeData = new java.util.ArrayList<>();
     }
 
     private void setupLayout() {
         setLayout(new BorderLayout());
+        setBorder(BorderFactory.createTitledBorder("Student Grades"));
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    // Getters
-    public JTable getGradeTable() {
-        return gradeTable;
-    }
-
-    public DefaultTableModel getTableModel() {
-        return tableModel;
-    }
-
     // Utility methods
-    public void clearTable() {
-        tableModel.setRowCount(0);
+    public void clearGrades() {
+        gradeDisplayArea.setText("");
+        gradeData.clear();
     }
 
-    public void addRow(Object[] rowData) {
-        tableModel.addRow(rowData);
+    public void addGrade(String firstName, String lastName, String grade) {
+        Object[] gradeInfo = {firstName, lastName, grade};
+        gradeData.add(gradeInfo);
+        updateDisplay();
     }
 
-    public void addRows(java.util.List<Object[]> rowsData) {
-        for (Object[] row : rowsData) {
-            tableModel.addRow(row);
+    public void addGrades(java.util.List<Object[]> grades) {
+        gradeData.clear();
+        gradeData.addAll(grades);
+        updateDisplay();
+    }
+
+    private void updateDisplay() {
+        StringBuilder displayText = new StringBuilder();
+        for (Object[] grade : gradeData) {
+            String firstName = grade[1].toString();
+            String lastName = grade[2].toString();
+            String finalGrade = grade[3].toString();
+            
+            // Format: "FirstName LastName Grade" with right-aligned grades
+            String name = firstName + " " + lastName;
+            displayText.append(String.format("%-30s %s%n", name, finalGrade));
         }
+        gradeDisplayArea.setText(displayText.toString());
     }
 
-    public int getSelectedRow() {
-        return gradeTable.getSelectedRow();
+    public int getGradeCount() {
+        return gradeData.size();
     }
 
-    public Object[] getSelectedRowData() {
-        int selectedRow = gradeTable.getSelectedRow();
-        if (selectedRow >= 0) {
-            Object[] rowData = new Object[4];
-            for (int i = 0; i < 4; i++) {
-                rowData[i] = tableModel.getValueAt(selectedRow, i);
-            }
-            return rowData;
-        }
+    public java.util.List<Object[]> getGradeData() {
+        return new java.util.ArrayList<>(gradeData);
+    }
+
+    // Method to get selected grade info (for compatibility with existing code)
+    public Object[] getSelectedGradeData() {
+        // Since this is now a text display, we'll return null for selection
         return null;
     }
 
     public String getSelectedStudentId() {
-        int selectedRow = gradeTable.getSelectedRow();
-        if (selectedRow >= 0) {
-            return tableModel.getValueAt(selectedRow, 0).toString();
-        }
+        // Since this is now a text display, we'll return null for selection
         return null;
     }
 
-    public int getRowCount() {
-        return tableModel.getRowCount();
+    public int getSelectedRow() {
+        // Since this is now a text display, we'll return -1 for no selection
+        return -1;
     }
 
+    // Compatibility method for existing controller
     public void setSelectionListener(javax.swing.event.ListSelectionListener listener) {
-        gradeTable.getSelectionModel().addListSelectionListener(listener);
+        // No selection listener needed for text display
     }
 }

@@ -50,11 +50,11 @@ public class GradeTableController {
                     List<Object[]> data = get();
                     
                     // Clear and populate table
-                    tablePanel.clearTable();
-                    tablePanel.addRows(data);
+                    tablePanel.clearGrades();
+                    tablePanel.addGrades(data);
                     
                     // Update status
-                    int rowCount = tablePanel.getRowCount();
+                    int rowCount = tablePanel.getGradeCount();
                     buttonPanel.setStatus("Data loaded successfully - " + rowCount + " records found", Color.GREEN);
                     
                 } catch (Exception e) {
@@ -77,15 +77,8 @@ public class GradeTableController {
     }
 
     private void populateFieldsFromSelectedRow() {
-        Object[] rowData = tablePanel.getSelectedRowData();
-        if (rowData != null) {
-            inputPanel.populateFields(
-                rowData[0].toString(),
-                rowData[1].toString(),
-                rowData[2].toString(),
-                rowData[3].toString()
-            );
-        }
+        // Since we're using text display now, we'll disable auto-population
+        // Users will need to manually enter data for updates
     }
 
     private void addRecord() {
@@ -121,13 +114,12 @@ public class GradeTableController {
     }
 
     private void removeRecord() {
-        int selectedRow = tablePanel.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(null, "Please select a record to remove", "No Selection", JOptionPane.WARNING_MESSAGE);
+        String studentId = inputPanel.getStudentId();
+        if (studentId.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter a Student ID to remove", "No Student ID", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String studentId = tablePanel.getSelectedStudentId();
         int confirm = JOptionPane.showConfirmDialog(null, 
             "Are you sure you want to remove student " + studentId + "?", 
             "Confirm Removal", 
@@ -160,25 +152,18 @@ public class GradeTableController {
     }
 
     private void updateRecord() {
-        int selectedRow = tablePanel.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(null, "Please select a record to update", "No Selection", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
         if (inputPanel.validateInput()) {
-            String oldStudentId = tablePanel.getSelectedStudentId();
+            String studentId = inputPanel.getStudentId();
+            String firstName = inputPanel.getFirstName();
+            String lastName = inputPanel.getLastName();
+            String finalGrade = inputPanel.getFinalGrade();
             
+            // For update, we'll use the student ID as both old and new ID
+            // In a real application, you might want to add a separate field for the old ID
             SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
                 @Override
                 protected Boolean doInBackground() throws Exception {
-                    return model.updateRecord(
-                        oldStudentId,
-                        inputPanel.getStudentId(),
-                        inputPanel.getFirstName(),
-                        inputPanel.getLastName(),
-                        inputPanel.getFinalGrade()
-                    );
+                    return model.updateRecord(studentId, studentId, firstName, lastName, finalGrade);
                 }
 
                 @Override
@@ -207,17 +192,13 @@ public class GradeTableController {
         tableContent.append(String.format("%-12s %-15s %-15s %-12s\n", "Student ID", "First Name", "Last Name", "Final Grade"));
         tableContent.append("--------------------------------------------------------\n");
 
-        for (int i = 0; i < tablePanel.getRowCount(); i++) {
-            Object[] rowData = new Object[4];
-            for (int j = 0; j < 4; j++) {
-                rowData[j] = tablePanel.getTableModel().getValueAt(i, j);
-            }
-            
+        List<Object[]> gradeData = tablePanel.getGradeData();
+        for (Object[] grade : gradeData) {
             tableContent.append(String.format("%-12s %-15s %-15s %-12s\n", 
-                rowData[0], rowData[1], rowData[2], rowData[3]));
+                grade[0], grade[1], grade[2], grade[3]));
         }
 
-        tableContent.append("\nTotal Records: ").append(tablePanel.getRowCount());
+        tableContent.append("\nTotal Records: ").append(tablePanel.getGradeCount());
 
         // Display in a scrollable text area
         JTextArea textArea = new JTextArea(tableContent.toString());

@@ -18,10 +18,11 @@ public class GradeTable extends JFrame {
 
     private void initializeComponents() {
         // Initialize the main frame
-        setTitle("Grade Table - Database Manager");
+        setTitle("myCWU Official Grades");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 700);
+        setSize(800, 600);
         setLocationRelativeTo(null);
+        setBackground(new Color(240, 240, 240));
 
         // Initialize components
         model = new GradeTableModel();
@@ -32,17 +33,19 @@ public class GradeTable extends JFrame {
 
     private void setupLayout() {
         setLayout(new BorderLayout());
+        setBackground(new Color(240, 240, 240));
 
-        // Create top panel for refresh and status
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.add(buttonPanel.getRefreshButton());
-        topPanel.add(Box.createHorizontalStrut(20));
-        topPanel.add(buttonPanel.getStatusLabel());
+        // Create main content panel
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(240, 240, 240));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Add components to frame
-        add(topPanel, BorderLayout.NORTH);
-        add(inputPanel, BorderLayout.WEST);
-        add(tablePanel, BorderLayout.CENTER);
+        // Add components to main panel
+        mainPanel.add(tablePanel, BorderLayout.CENTER);
+        mainPanel.add(inputPanel, BorderLayout.SOUTH);
+        
+        // Add main panel and button panel to frame
+        add(mainPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }
 

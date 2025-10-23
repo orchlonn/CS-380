@@ -15,40 +15,64 @@ public class ButtonPanel extends JPanel {
     }
 
     private void initializeComponents() {
-        // Initialize buttons
+        // Initialize buttons with modern styling
         refreshButton = new JButton("Refresh Data");
         addButton = new JButton("Add");
         removeButton = new JButton("Remove");
         updateButton = new JButton("Update");
         printTableButton = new JButton("Print Table");
         
-        // Set button sizes
-        Dimension buttonSize = new Dimension(100, 30);
+        // Set button sizes and styling
+        Dimension buttonSize = new Dimension(120, 35);
+        Font buttonFont = new Font("Arial", Font.BOLD, 12);
+        
         refreshButton.setPreferredSize(buttonSize);
         addButton.setPreferredSize(buttonSize);
         removeButton.setPreferredSize(buttonSize);
         updateButton.setPreferredSize(buttonSize);
         printTableButton.setPreferredSize(buttonSize);
         
+        // Apply font to all buttons
+        refreshButton.setFont(buttonFont);
+        addButton.setFont(buttonFont);
+        removeButton.setFont(buttonFont);
+        updateButton.setFont(buttonFont);
+        printTableButton.setFont(buttonFont);
+        
+        // Set button colors to match sample
+        Color buttonColor = new Color(240, 240, 240);
+        addButton.setBackground(buttonColor);
+        removeButton.setBackground(buttonColor);
+        updateButton.setBackground(buttonColor);
+        printTableButton.setBackground(buttonColor);
+        
         statusLabel = new JLabel("Ready to load data...");
         statusLabel.setForeground(Color.BLUE);
+        statusLabel.setFont(new Font("Arial", Font.PLAIN, 12));
     }
 
     private void setupLayout() {
-        setLayout(new FlowLayout(FlowLayout.CENTER));
-        setBorder(BorderFactory.createTitledBorder("Operations"));
+        setLayout(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        add(addButton);
-        add(removeButton);
-        add(updateButton);
-        add(printTableButton);
+        // Top panel for refresh button and status
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.add(refreshButton);
+        topPanel.add(Box.createHorizontalStrut(20));
+        topPanel.add(statusLabel);
         
-        // Add database info
-        JLabel infoLabel = new JLabel("Database: expresso_shop | Table: 302_grades");
-        infoLabel.setFont(new Font("Arial", Font.ITALIC, 12));
-        infoLabel.setForeground(Color.GRAY);
-        add(Box.createHorizontalStrut(30));
-        add(infoLabel);
+        // Bottom panel for operation buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(addButton);
+        buttonPanel.add(Box.createHorizontalStrut(10));
+        buttonPanel.add(removeButton);
+        buttonPanel.add(Box.createHorizontalStrut(10));
+        buttonPanel.add(updateButton);
+        buttonPanel.add(Box.createHorizontalStrut(10));
+        buttonPanel.add(printTableButton);
+        
+        add(topPanel, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.CENTER);
     }
 
     // Getters for buttons
