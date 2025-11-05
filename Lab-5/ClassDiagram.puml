@@ -1,0 +1,115 @@
+@startuml Library Management System
+
+' Abstract class
+abstract class LibraryItem {
+  - title : String
+  - callNumber : String
+  - checkedOut : boolean
+  - checkedOutBy : Patron
+  __
+  + LibraryItem(title : String, callNumber : String)
+  + getTitle() : String
+  + getCallNumber() : String
+  + isCheckedOut() : boolean
+  + getCheckedOutBy() : Patron
+  + checkOut(patron : Patron) : boolean
+  + checkIn() : boolean
+  + {abstract} getDetails() : String
+  + {abstract} getSearchableText() : String
+  + toString() : String
+}
+
+' Book class
+class Book {
+  - authors : List<String>
+  - publicationYear : int
+  - isbn : String
+  __
+  + Book(title, callNumber, authors, publicationYear, isbn)
+  + getAuthors() : List<String>
+  + getPublicationYear() : int
+  + getIsbn() : String
+  + getDetails() : String
+  + getSearchableText() : String
+}
+
+' DVD class
+class DVD {
+  - year : int
+  __
+  + DVD(title : String, callNumber : String, year : int)
+  + getYear() : int
+  + getDetails() : String
+  + getSearchableText() : String
+}
+
+' Patron class
+class Patron {
+  - name : String
+  - studentId : String
+  - checkedOutItems : List<LibraryItem>
+  __
+  + Patron(name : String, studentId : String)
+  + getName() : String
+  + getStudentId() : String
+  + getCheckedOutItems() : List<LibraryItem>
+  + addCheckedOutItem(item : LibraryItem) : void
+  + removeCheckedOutItem(item : LibraryItem) : void
+  + toString() : String
+}
+
+' Library System class
+class LibrarySystem {
+  - inventory : Map<String, LibraryItem>
+  - patrons : Map<String, Patron>
+  __
+  + LibrarySystem()
+  + addItem(item : LibraryItem) : boolean
+  + removeItem(callNumber : String) : boolean
+  + registerPatron(patron : Patron) : boolean
+  + searchItems(searchTerm : String) : List<LibraryItem>
+  + checkOutItem(callNumber : String, studentId : String) : boolean
+  + checkInItem(callNumber : String) : boolean
+  + displayInventory() : void
+  + displayPatrons() : void
+  + getPatron(studentId : String) : Patron
+  + getItem(callNumber : String) : LibraryItem
+}
+
+' Driver class
+class LibraryDriver {
+  + {static} main(args : String[]) : void
+}
+
+' Relationships
+LibraryItem <|-- Book : extends
+LibraryItem <|-- DVD : extends
+LibraryItem "*" --> "0..1" Patron : checkedOutBy
+Patron "1" --> "*" LibraryItem : checkedOutItems
+LibrarySystem "1" o-- "*" LibraryItem : manages
+LibrarySystem "1" o-- "*" Patron : manages
+LibraryDriver ..> LibrarySystem : uses
+LibraryDriver ..> Book : uses
+LibraryDriver ..> DVD : uses
+LibraryDriver ..> Patron : uses
+
+note right of LibraryItem
+  Abstract class provides
+  common functionality for
+  all library items.
+  
+  Future items (Skateboard,
+  Scooter, etc.) can extend
+  this class without modifying
+  existing code.
+end note
+
+note bottom of LibrarySystem
+  Uses HashMap for efficient
+  O(1) lookup operations:
+  - Items by call number
+  - Patrons by student ID
+end note
+
+@enduml
+
