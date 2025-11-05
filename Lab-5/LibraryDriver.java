@@ -6,8 +6,7 @@ import java.util.List;
  * Demonstrates adding items, registering patrons, checking out/in items,
  * searching, and removing items.
  * 
- * @author CS-380 Student
- * @version 1.0
+ * @author Orchlon Chinbat
  */
 public class LibraryDriver {
     

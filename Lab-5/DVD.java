@@ -2,8 +2,7 @@
  * Represents a DVD in the library system.
  * Contains information specific to DVDs such as year and call number.
  * 
- * @author CS-380 Student
- * @version 1.0
+ * @author Orchlon Chinbat
  */
 public class DVD extends LibraryItem {
     private final int year;

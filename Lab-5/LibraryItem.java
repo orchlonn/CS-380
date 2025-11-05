@@ -3,8 +3,7 @@
  * This class serves as a template for all types of items that can be
  * checked out from the library (books, DVDs, etc.).
  * 
- * @author CS-380 Student
- * @version 1.0
+ * @author Orchlon Chinbat
  */
 public abstract class LibraryItem {
     private String title;

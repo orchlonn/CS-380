@@ -5,8 +5,7 @@ import java.util.List;
  * Represents a library patron who can check out items.
  * Each patron has a name and student ID number.
  * 
- * @author CS-380 Student
- * @version 1.0
+ * @author Orchlon Chinbat
  */
 public class Patron {
     private final String name;

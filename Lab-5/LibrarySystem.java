@@ -7,8 +7,7 @@ import java.util.Map;
  * Main library management system that handles inventory and patron operations.
  * Uses efficient data structures (HashMap) for fast lookup of items and patrons.
  * 
- * @author CS-380 Student
- * @version 1.0
+ * @author Orchlon Chinbat
  */
 public class LibrarySystem {
     private final Map<String, LibraryItem> inventory;

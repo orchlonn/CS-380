@@ -5,8 +5,7 @@ import java.util.List;
  * Represents a book in the library system.
  * Contains information specific to books such as authors, ISBN, and publication year.
  * 
- * @author CS-380 Student
- * @version 1.0
+ * @author Orchlon Chinbat
  */
 public class Book extends LibraryItem {
     private List<String> authors;
