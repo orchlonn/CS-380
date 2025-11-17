@@ -1,26 +1,18 @@
-/**
- * CopyCommand - Concrete command for copy operation
- * Encapsulates the copy functionality and maintains state for undo
- */
 public class CopyCommand implements Command {
-    private DocumentEditor editor;
-    private DocumentEditor.EditorState previousState;
-    
-    public CopyCommand(DocumentEditor editor) {
-        this.editor = editor;
+    private final Document doc;
+
+    public CopyCommand(Document doc) {
+        this.doc = doc;
     }
-    
+
     @Override
     public void execute() {
-        previousState = editor.copy();
+        doc.copy();
     }
-    
+
     @Override
     public void undo() {
-        if (previousState != null) {
-            editor.restoreState(previousState);
-            System.out.println("COPY operation undone.");
-        }
+        // Copy does not modify the document text, only the clipboard
+        // In a full implementation, you might want to restore clipboard state
     }
 }
-

@@ -1,26 +1,19 @@
-/**
- * PasteCommand - Concrete command for paste operation
- * Encapsulates the paste functionality and maintains state for undo
- */
 public class PasteCommand implements Command {
-    private DocumentEditor editor;
-    private DocumentEditor.EditorState previousState;
-    
-    public PasteCommand(DocumentEditor editor) {
-        this.editor = editor;
+    private final Document doc;
+    private String backup = "";
+
+    public PasteCommand(Document doc) {
+        this.doc = doc;
     }
-    
+
     @Override
     public void execute() {
-        previousState = editor.paste();
+        backup = doc.getText();
+        doc.paste();
     }
-    
+
     @Override
     public void undo() {
-        if (previousState != null) {
-            editor.restoreState(previousState);
-            System.out.println("PASTE operation undone.");
-        }
+        doc.setText(backup);
     }
 }
-
